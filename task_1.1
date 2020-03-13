@@ -1,0 +1,147 @@
+using System;
+using System.IO;
+//Задача: Остров Кижи расположен в северной части Онежского озера. В честь острова придумали синтаксис языка Кижи, но разработчик ушел в другую команду, а интерпретатор так и остался ненаписанным. Тебе поручается написать интерпретатор по имеющемуся синтаксису и завершить начатое.
+//
+// Скачай проект KizhiPart1 и реализуй в нем метод ExecuteLine класса Interpreter
+// 
+// Вывод необходимо писать в передаваемый через конструктор TextWriter
+// 
+// Ввод передается построчно
+// 
+// Ввод
+// 1
+// set a 5
+// 2
+// sub a 3
+// 3
+// print a
+// 4
+// set b 4
+// 5
+// print b
+// Вывод
+// 1
+// 2
+// 2
+// 4
+// Описание синтаксиса команд языка Кижи:
+// set {variable} {value} - присвоить переменной { variable }
+// значение {value}
+// sub {variable} {value} - отнять из переменной {variable} значение {value}
+// print {variable} - вывести значение переменной {variable}
+// rem {variable} - удалить переменную { variable }
+// из памяти
+// где {variable} - последовательность символов из букв английского алфавита, {value} - число из множества натуральных чисел.
+// 
+// Особенности языка Кижи
+// Все переменные являются мутабельными, немутабельных переменных в языке Кижи нет.Это значит что при повторном выполнении команды set значение переменной, если она была уже в памяти заменяется.
+// Обработка ошибок, формат вывода:
+// Если какой-то переменной нет в памяти при интерпретации команд sub, print, rem интерпретатор должен вывести: "Переменная отсутствует в памяти"
+// 
+// Что будет проверяться:
+// Корректная обработка ошибок
+// Полнота реализации всех функций языка
+// Простота реализации интерпретатора
+namespace KizhiPart1
+{
+
+    public class Interpreter
+    {
+       public static TextWriter writerLine = new StreamWriter("output.txt");
+
+        public Interpreter(TextWriter writer)
+        {
+            writerLine = writer;
+        }
+
+        public void ExecuteLine(string command)
+        {
+                       
+        }
+        static void Main()
+        {
+            int a = 0, b = 0;
+            bool enteredA = false, enteredB = false;
+            while (true)
+            {
+                string[] str = Console.ReadLine().ToLower().Split(' '); //ПРИ ВВОДЕ ДРОБИТ СТРОКУ И ПЕРЕВОДИТ В НИЖНИЙ РЕГИСТР ЧТОБЫ ИЗБЕЖАТЬ ОШИБОК ПО ТИПУ Set вместо set
+
+                switch (str[0])
+                {
+                    case "set"://ПРИСВАИВАНИЕ ЗНАЧАНИЯ
+                        if (str[1] == "a")//ВЫБИРАЕТ МЕЖДУ ДВУМЯ ПЕРЕМЕННЫМИ 
+                        {
+                            a = Convert.ToInt32(str[2]);
+                            enteredA = true; //ЗАПОМИНАЕТ, ЧТО ЗНАЧЕНИЕ БЫЛО ВВЕДЕНО 
+                        }
+                        else
+                        {
+                            b = Convert.ToInt32(str[2]);
+                            enteredB = true;
+                        }
+                        break;
+
+                        
+                    case "sub"://ВЫЧИТАНИЕ
+                        if (str[1] == "a")//ВЫБИРАЕТ МЕЖДУ ДВУМЯ ПЕРЕМЕННЫМИ 
+                        {
+                            if (enteredA) //ПРОВЕРЯЕТ НАЛИЧИЯ ЗНАЧЕНИЯ У ДАННОЙ ПЕРЕМЕННОЙ
+                                a = Convert.ToInt32(str[2]);
+                            else
+                                Console.WriteLine("Переменная a отсутствует в памяти");
+                        }
+                        else
+                        {
+                            if (enteredB)
+                                b = Convert.ToInt32(str[2]);
+                            else
+                                Console.WriteLine("Переменная b отсутствует в памяти");
+                        }
+                        break;
+
+
+                    case "print"://ВЫВОД
+                        if (str[1] == "a")//ВЫБИРАЕТ МЕЖДУ ДВУМЯ ПЕРЕМЕННЫМИ 
+                        {
+                            if (enteredA)//ПРОВЕРЯЕТ НАЛИЧИЯ ЗНАЧЕНИЯ У ДАННОЙ ПЕРЕМЕННОЙ
+                            {
+                                writerLine.WriteLine(a);
+                                writerLine.Close();
+                            }
+                            else
+                            {
+                                Console.WriteLine("Переменная a отсутствует в памяти");
+                                writerLine.Close();
+                            }
+                        }
+                        else
+                        {
+                            if (enteredB)
+                                writerLine.WriteLine(b);
+                            else
+                                Console.WriteLine("Переменная b отсутствует в памяти");
+                        }
+                        break;
+
+
+                    case "rem"://ОБНУЛЕНИЕ
+                        if (str[1] == "a")
+                            enteredA = false;
+                        else
+                            enteredB = false;
+                        break;
+
+
+                    case "end"://ЗАВЕРШЕНИЕ ВЫПОСЛЕНИЯ ПРОГРАММЫ
+                        Environment.Exit(0);
+                        break;
+
+                    default: //ОШИБКА ВВОДА КОМАНДЫ
+                        Console.WriteLine("command input error");
+                        break;
+                }
+                
+            }
+        }
+    }
+}
