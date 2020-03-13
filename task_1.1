@@ -47,7 +47,7 @@ namespace KizhiPart1
 
     public class Interpreter
     {
-       public static TextWriter writerLine = new StreamWriter("output.txt");
+       public static TextWriter writerLine = new StreamWriter(@"output.txt");
 
         public Interpreter(TextWriter writer)
         {
@@ -86,14 +86,14 @@ namespace KizhiPart1
                         if (str[1] == "a")//ВЫБИРАЕТ МЕЖДУ ДВУМЯ ПЕРЕМЕННЫМИ 
                         {
                             if (enteredA) //ПРОВЕРЯЕТ НАЛИЧИЯ ЗНАЧЕНИЯ У ДАННОЙ ПЕРЕМЕННОЙ
-                                a = Convert.ToInt32(str[2]);
+                                a -= Convert.ToInt32(str[2]);
                             else
                                 Console.WriteLine("Переменная a отсутствует в памяти");
                         }
                         else
                         {
                             if (enteredB)
-                                b = Convert.ToInt32(str[2]);
+                                b -= Convert.ToInt32(str[2]);
                             else
                                 Console.WriteLine("Переменная b отсутствует в памяти");
                         }
@@ -104,20 +104,20 @@ namespace KizhiPart1
                         if (str[1] == "a")//ВЫБИРАЕТ МЕЖДУ ДВУМЯ ПЕРЕМЕННЫМИ 
                         {
                             if (enteredA)//ПРОВЕРЯЕТ НАЛИЧИЯ ЗНАЧЕНИЯ У ДАННОЙ ПЕРЕМЕННОЙ
-                            {
+                            {                               
                                 writerLine.WriteLine(a);
-                                writerLine.Close();
                             }
                             else
                             {
                                 Console.WriteLine("Переменная a отсутствует в памяти");
-                                writerLine.Close();
                             }
                         }
                         else
                         {
                             if (enteredB)
+                            {
                                 writerLine.WriteLine(b);
+                            }
                             else
                                 Console.WriteLine("Переменная b отсутствует в памяти");
                         }
@@ -133,6 +133,7 @@ namespace KizhiPart1
 
 
                     case "end"://ЗАВЕРШЕНИЕ ВЫПОСЛЕНИЯ ПРОГРАММЫ
+                        writerLine.Close();
                         Environment.Exit(0);
                         break;
 
