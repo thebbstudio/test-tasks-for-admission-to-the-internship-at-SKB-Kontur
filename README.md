@@ -1,0 +1,1 @@
+# test-tasks-for-admission-to-the-internship-at-SKB-Kontur
