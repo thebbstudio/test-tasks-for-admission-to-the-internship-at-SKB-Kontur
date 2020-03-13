@@ -47,102 +47,107 @@ namespace KizhiPart1
 
     public class Interpreter
     {
-       public static TextWriter writerLine = new StreamWriter(@"output.txt");
+        TextWriter _writer;
+        int a = 0, b = 0;
+        bool enteredA = false, enteredB = false;
 
         public Interpreter(TextWriter writer)
         {
-            writerLine = writer;
+            _writer = writer;
         }
 
         public void ExecuteLine(string command)
         {
-                       
-        }
-        static void Main()
-        {
-            int a = 0, b = 0;
-            bool enteredA = false, enteredB = false;
-            while (true)
+            string[] str = command.ToLower().Split(' '); //ПРИ ВВОДЕ ДРОБИТ СТРОКУ И ПЕРЕВОДИТ В НИЖНИЙ РЕГИСТР ЧТОБЫ ИЗБЕЖАТЬ ОШИБОК ПО ТИПУ Set вместо set
+
+            switch (str[0])
             {
-                string[] str = Console.ReadLine().ToLower().Split(' '); //ПРИ ВВОДЕ ДРОБИТ СТРОКУ И ПЕРЕВОДИТ В НИЖНИЙ РЕГИСТР ЧТОБЫ ИЗБЕЖАТЬ ОШИБОК ПО ТИПУ Set вместо set
+                case "set"://ПРИСВАИВАНИЕ ЗНАЧАНИЯ
+                    if (str[1] == "a")//ВЫБИРАЕТ МЕЖДУ ДВУМЯ ПЕРЕМЕННЫМИ 
+                    {
+                        a = Convert.ToInt32(str[2]);
+                        enteredA = true; //ЗАПОМИНАЕТ, ЧТО ЗНАЧЕНИЕ БЫЛО ВВЕДЕНО 
+                    }
+                    else
+                    {
+                        b = Convert.ToInt32(str[2]);
+                        enteredB = true;
+                    }
+                    break;
 
-                switch (str[0])
-                {
-                    case "set"://ПРИСВАИВАНИЕ ЗНАЧАНИЯ
-                        if (str[1] == "a")//ВЫБИРАЕТ МЕЖДУ ДВУМЯ ПЕРЕМЕННЫМИ 
+
+                case "sub"://ВЫЧИТАНИЕ
+                    if (str[1] == "a")//ВЫБИРАЕТ МЕЖДУ ДВУМЯ ПЕРЕМЕННЫМИ 
+                    {
+                        if (enteredA) //ПРОВЕРЯЕТ НАЛИЧИЯ ЗНАЧЕНИЯ У ДАННОЙ ПЕРЕМЕННОЙ
+                            a -= Convert.ToInt32(str[2]);
+                        else
+                            Console.WriteLine("Переменная a отсутствует в памяти");
+                    }
+                    else
+                    {
+                        if (enteredB)
+                            b -= Convert.ToInt32(str[2]);
+                        else
+                            Console.WriteLine("Переменная b отсутствует в памяти");
+                    }
+                    break;
+
+
+                case "print"://ВЫВОД
+                    if (str[1] == "a")//ВЫБИРАЕТ МЕЖДУ ДВУМЯ ПЕРЕМЕННЫМИ 
+                    {
+                        if (enteredA)//ПРОВЕРЯЕТ НАЛИЧИЯ ЗНАЧЕНИЯ У ДАННОЙ ПЕРЕМЕННОЙ
                         {
-                            a = Convert.ToInt32(str[2]);
-                            enteredA = true; //ЗАПОМИНАЕТ, ЧТО ЗНАЧЕНИЕ БЫЛО ВВЕДЕНО 
+                            _writer.WriteLine(a);
                         }
                         else
                         {
-                            b = Convert.ToInt32(str[2]);
-                            enteredB = true;
+                            Console.WriteLine("Переменная a отсутствует в памяти");
                         }
-                        break;
-
-                        
-                    case "sub"://ВЫЧИТАНИЕ
-                        if (str[1] == "a")//ВЫБИРАЕТ МЕЖДУ ДВУМЯ ПЕРЕМЕННЫМИ 
+                    }
+                    else
+                    {
+                        if (enteredB)
                         {
-                            if (enteredA) //ПРОВЕРЯЕТ НАЛИЧИЯ ЗНАЧЕНИЯ У ДАННОЙ ПЕРЕМЕННОЙ
-                                a -= Convert.ToInt32(str[2]);
-                            else
-                                Console.WriteLine("Переменная a отсутствует в памяти");
+                            _writer.WriteLine(b);
                         }
                         else
-                        {
-                            if (enteredB)
-                                b -= Convert.ToInt32(str[2]);
-                            else
-                                Console.WriteLine("Переменная b отсутствует в памяти");
-                        }
-                        break;
+                            Console.WriteLine("Переменная b отсутствует в памяти");
+                    }
+                    break;
 
 
-                    case "print"://ВЫВОД
-                        if (str[1] == "a")//ВЫБИРАЕТ МЕЖДУ ДВУМЯ ПЕРЕМЕННЫМИ 
-                        {
-                            if (enteredA)//ПРОВЕРЯЕТ НАЛИЧИЯ ЗНАЧЕНИЯ У ДАННОЙ ПЕРЕМЕННОЙ
-                            {                               
-                                writerLine.WriteLine(a);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Переменная a отсутствует в памяти");
-                            }
-                        }
-                        else
-                        {
-                            if (enteredB)
-                            {
-                                writerLine.WriteLine(b);
-                            }
-                            else
-                                Console.WriteLine("Переменная b отсутствует в памяти");
-                        }
-                        break;
+                case "rem"://ОБНУЛЕНИЕ
+                    if (str[1] == "a")
+                        enteredA = false;
+                    else
+                        enteredB = false;
+                    break;
 
 
-                    case "rem"://ОБНУЛЕНИЕ
-                        if (str[1] == "a")
-                            enteredA = false;
-                        else
-                            enteredB = false;
-                        break;
+                case "end"://ЗАВЕРШЕНИЕ ВЫПОСЛЕНИЯ ПРОГРАММЫ
+                    _writer.Close();
+                    Environment.Exit(0);
+                    break;
 
-
-                    case "end"://ЗАВЕРШЕНИЕ ВЫПОСЛЕНИЯ ПРОГРАММЫ
-                        writerLine.Close();
-                        Environment.Exit(0);
-                        break;
-
-                    default: //ОШИБКА ВВОДА КОМАНДЫ
-                        Console.WriteLine("command input error");
-                        break;
-                }
-                
+                default: //ОШИБКА ВВОДА КОМАНДЫ
+                    Console.WriteLine("command input error");
+                    break;
             }
         }
-    }
+
+                    
+
+        static void Main()
+        {
+            TextWriter writerLine = new StreamWriter("output.txt");
+            Interpreter interpreter = new Interpreter(writerLine);
+            while (true)
+            {
+                interpreter.ExecuteLine(Console.ReadLine());
+            }
+        }
+
+    } 
 }
